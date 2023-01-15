@@ -1,0 +1,28 @@
+.velocity-tracker {
+    padding: 0;
+    margin-top: 0;
+    gap: 1em;
+}
+
+.velocity-tracker-list > li {
+    align-items: center;
+    gap: 0.5em;
+}
+
+.velocity-tracker-icon-button {
+    background: transparent;
+    padding: 0;
+    color: rgb(0, 0, 0);
+    line-height: normal;
+    border: 0;
+    align-self: center;
+}
+
+.velocity-tracker-icon-button > i {
+    margin-right: 0;
+}
+  
+.velocity-tracker-icon-button:hover, .velocity-tracker-icon-button:focus {
+    box-shadow: none;
+    text-shadow: 0 0 5px red;
+}

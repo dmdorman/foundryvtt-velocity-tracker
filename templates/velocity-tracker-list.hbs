@@ -1,0 +1,33 @@
+{{log 'velocity-tracker-list-template' this}}
+<form>
+    <ul class="velocity-tracker-list flexcol">
+    <div class="flexrow">
+        <div>character/vehicle name</div>
+        <div>current velocity ({{distanceUnits}}/{{timeUnits}})</div>
+        <div>distance moved ({{distanceUnits}})</div>
+        <div>acceleration ({{distanceUnits}}/{{timeUnits}}^2)</div>
+        <div>elapsed time ({{timeUnits}})</div>
+    </div>
+    {{#each velocitytrackers}}
+        <li class="flewrow" data-velocity-tracker-id="{{id}}">
+            <div class="flexrow">
+                <input type="text" value="{{name}}" name="{{id}}.name" data-dtype="String" />
+
+                <input type="text" value="{{currentVelocity}}" name="{{id}}.currentVelocity" data-dtype="Number" />
+
+                <input type="text" value="{{movementAction}}" name="{{id}}.movementAction" data-dtype="Number" />
+
+                <input type="text" value="{{acceleration}}" name="{{id}}.acceleration" data-dtype="Number" />
+
+                <input type="text" value="{{elapsedTime}}" name="{{id}}.elapsedTime" data-dtype="Number" />
+
+                <button type="button" title="{{localize "VELOCITY-TRACKER.delete-velocity-tracker"}}" data-action="delete" class="flex0 velocity-tracker-icon-button">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </li>
+    {{/each}}
+    </ul>
+
+    <button type="button" data-action="create"><i class="fas fa-plus"></i>{{localize "VELOCITY-TRACKER.add-velocity-tracker"}}</button>
+</form>

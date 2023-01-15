@@ -1,95 +1,226 @@
-console.log("Hello World! This code runs immediately when the file is loaded.");
-
 Hooks.on("init", function() {
-    console.log("This code runs once the Foundry VTT software begins its initialization workflow.");
+    VelocityTrackerList.initialize()
+});
 
-    Hooks.on("getSceneControlButtons", (controls) => {
-        controls[0].tools.push({
-        name: 'velocity tracker',
-        title: 'Velocity Tracker',
-        icon: 'far fa-up',
-        button: true,
-        onClick: () => new VelocityTracker().render(true),
-        visible: true
+Hooks.on("getSceneControlButtons", (controls) => {
+    controls[0].tools.push({
+    name: 'velocity tracker',
+    title: 'Velocity Tracker',
+    icon: 'far fa-up',
+    button: true,
+    //onClick: () => new VelocityTracker().render(true),
+    onClick: () => {
+        const userId = game.userId;
+        VelocityTrackerList.velocityTracker.render(true, {userId})
+    },
+    visible: true
+    })
+});
+
+Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
+    registerPackageDebugFlag(VelocityTrackerList.ID);
+});
+
+/**
+ * A single VelocityTracker in a list of VelocityTrackers
+ * @typedef {Object} VelocityTracker
+ * @property {string} userId - the user's id which owns this VelocityTracker
+ * @property {string} id - A unique ID to identify this VelocityTracker
+ * @property {name} name - The name of the character/vehicle being tracked
+ * @property {float} currentVelocity - current velocity of character/vehicle
+ * @property {float} newVel - new velocity of character/vehicle
+ * @property {float} movementAction - how far does a character/vehicle move in a specific turn
+ * @property {float} acceleration - how much is character/vehicle accelerating?
+ * @property {float} elapsedTime - total elapsed time since movment began
+ */
+class VelocityTrackerList {
+    static initialize() {
+        this.velocityTracker = new VelocityTracker();
+
+        // distance units setting
+        game.settings.register(this.ID, this.SETTINGS.DISTANCE_UNITS, {
+            name: `VELOCITY-TRACKER.settings.${this.SETTINGS.DISTANCE_UNITS}.Name`,
+            default: "m/s",
+            type: String,
+            scope: 'world',
+            config: true,
+            hint: `VELOCITY-TRACKER.settings.${this.SETTINGS.DISTANCE_UNITS}.Hint`,
+            onChange: () => ui.players.render()
         })
-    });
-});
 
-Hooks.on("ready", function() {
-    console.log("This code runs once core initialization is ready and game data is available.");
-});
-class VelocityTracker extends FormApplication {
-    constructor() {
-        super();
-        this.data = {
+        // time units setting
+        game.settings.register(this.ID, this.SETTINGS.TIME_UNITS, {
+            name: `VELOCITY-TRACKER.settings.${this.SETTINGS.TIME_UNITS}.Name`,
+            default: "m/s",
+            type: String,
+            scope: 'world',
+            config: true,
+            hint: `VELOCITY-TRACKER.settings.${this.SETTINGS.TIME_UNITS}.Hint`,
+            onChange: () => ui.players.render()
+        })
+    }
+
+    static ID = 'velocity-tracker';
+
+    static FLAGS = {
+        VELOCITYTRACKER: 'velocitytracker'
+    }
+
+    static TEMPLATES = {
+        VELOCITYTRACKERLIST: `./modules/${this.ID}/templates/velocity-tracker-list.hbs`
+    }
+
+    static SETTINGS = {
+        DISTANCE_UNITS: 'distance-units',
+        TIME_UNITS: 'time-units'
+    }
+
+    static log(force, ...args) {
+        const shouldLog = force || game.modules.get('_dev-mode')?.api?.getPackageDebugValue(this.ID);
+
+        if (shouldLog) {
+            console.log(this.ID, '|', ...args);
+        }
+    }
+}
+
+class VelocityTrackerData {
+    // all velocity trackers for all users
+    static get allVelocityTrackers() {
+        const allVelocityTrackers = game.users.reduce((accumulator, user) => {
+            const userVelocityTrackers = this.getVelocityTrackersForUser(user.id);
+
+            return {
+                ...accumulator,
+                ...userVelocityTrackers
+            }
+        }, {});
+
+        return allVelocityTrackers
+    }
+
+    // get all velocity trackers for a given user
+    static getVelocityTrackersForUser(userId) {
+        return game.users.get(userId)?.getFlag(VelocityTrackerList.ID, VelocityTrackerList.FLAGS.VELOCITYTRACKER)
+    }
+
+    // create a new velocity tracker for a given user
+    static createVelocityTracker(userId, velocityTrackerData) {
+        const newVelocityTracker = {
+            userId,
+            id: foundry.utils.randomID(16),
             name: "character/vehicle name",
-            maxMove: 0
-        };
+            currentVelocity: 0,
+            movementAction: 0,
+            acceleration: 0,
+            elapsedTime: 0,
+            ...velocityTrackerData
+        }
+
+        const update = {
+            [newVelocityTracker.id]: newVelocityTracker
+        }
+
+        return game.users.get(userId)?.setFlag(VelocityTrackerList.ID, VelocityTrackerList.FLAGS.VELOCITYTRACKER, update)
     }
 
+    // update a specific velocity tracker by id with the provided updateData
+    static updateVelocityTracker(velocityTrackerId, updateData) {
+        const relevantVelocityTracker = this.allVelocityTrackers[velocityTrackerId];
+
+        const update = {
+            [velocityTrackerId]: updateData
+        }
+
+        return game.users.get(relevantVelocityTracker.userId)?.setFlag(VelocityTrackerList.ID, VelocityTrackerList.FLAGS.VELOCITYTRACKER, update);
+    }
+
+    static updateUserVelocityTrackers(userId, updateData) {
+        return game.users.get(userId)?.setFlag(VelocityTrackerList.ID, VelocityTrackerList.FLAGS.VELOCITYTRACKER, updateData);
+    }
+
+    // delete a specific velocity tracker by id
+    static deleteVelocityTracker(velocityTrackerId) {
+        const relevantVelocityTracker = this.allVelocityTrackers[velocityTrackerId];
+
+        const keyDeletion = {
+            [`-=${velocityTrackerId}`]: null
+        }
+
+        return game.users.get(relevantVelocityTracker.userId)?.setFlag(VelocityTrackerList.ID, VelocityTrackerList.FLAGS.VELOCITYTRACKER, keyDeletion)
+    }
+}
+
+class VelocityTracker extends FormApplication {
     static get defaultOptions() {
-        return mergeObject(super.defaultOptions, {
-            classes: ['velocity-tracker-gui'],
-            popOut: true,
-            template: './modules/velocity-tracker/templates/tracker.hbs',
-            id: 'velocity-tracker-application',
+        const defaults = super.defaultOptions;
+
+        const overrides = {
+            height: 'auto',
+            width: 600,
+            id: 'velocity-tracker',
+            template: VelocityTrackerList.TEMPLATES.VELOCITYTRACKERLIST,
             title: 'Velocity Tracker',
-        });
+            userId: game.userId,
+            closeOnSubmit: false, // do not close when submitted
+            submitOnChange: true, // submit when any input changes
+        }
+
+        const mergedOptions = foundry.utils.mergeObject(defaults, overrides);
+
+        return mergedOptions
     }
 
-    getData() {
-        const data = super.getData()
-    
-        data.name = "character/vehicle name"
-        data.maxMove = 0
-        data.maxAction = 0
-        data.maxVel = 0
-        //data = this.data;
+    getData(options) {
+        return {
+            velocitytrackers: VelocityTrackerData.getVelocityTrackersForUser(options.userId),
+            distanceUnits: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.DISTANCE_UNITS),
+            timeUnits: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.TIME_UNITS)
+        }
+    }
 
-        //data.name = this.data.name;
-        //data.other = "Its me I'm other"
-    
-        return data
+    async _updateObject(event, formData) {
+        const expandedData = foundry.utils.expandObject(formData);
+
+        await VelocityTrackerData.updateUserVelocityTrackers(this.options.userId, expandedData);
+
+        this.render();
     }
 
     activateListeners(html) {
         super.activateListeners(html);
 
-        html.find('input').each((id, inp) => {
-            this.changeValue = async function (e) {
-              if (e.code === 'Enter' || e.code === 'Tab') {
-                let key = e.target.dataset.key
+        html.on('click', "[data-action]", this._handleButtonClick.bind(this));
+    }
 
-                if (e.target.dataset.dtype === 'Number') {
-                  this.data.name = e.target.value
+    async _handleButtonClick(event) {
+        const clickedElement = $(event.currentTarget);
+        const action = clickedElement.data().action;
+        const velocityTrackerId = clickedElement.parents('[data-velocity-tracker-id]')?.data()?.velocityTrackerId;
 
-                  if (isNaN(parseInt(e.target.value))) {
-                    console.log(e.target.dataset.key)
-
-                    this.data[`${key}`] = "bruh"
-
-                    console.log(this.data)
-
-                    //return
-                  }
-      
-                  console.log(e.target.value)
-                  //const changes = []
-                  //changes[`system.characteristics.${e.target.name}`] = parseInt(e.target.value)
-                  //await this.actor.update(changes)
-                  
-                } else {
-                  //this._updateName(e.target.value)
-                  console.log('else!')
-                  console.log(e.target.value)
-                }
-
-                //this.getData()
-                //this.render()
-              }
+        switch(action) {
+            case 'create': {
+                await VelocityTrackerData.createVelocityTracker(this.options.userId);
+                this.render();
+                break;
             }
 
-            inp.addEventListener('keydown', this.changeValue.bind(this))
-        })
+            case 'delete': {
+                const confirmed = await Dialog.confirm({
+                    title: game.i18n.localize("VELOCITY-TRACKER.confirms.deleteConfirm.Title"),
+                    content: game.i18n.localize("VELOCITY-TRACKER.confirms.deleteConfirm.Content")
+                });
+
+                if (confirmed) {
+                    await VelocityTrackerData.deleteVelocityTracker(velocityTrackerId);
+                    this.render();
+                }
+
+                break;
+            }
+
+            default:
+                VelocityTracker.log(false, 'Invalid action detected', action)
+        }
     }
 }

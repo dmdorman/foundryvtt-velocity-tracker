@@ -1,0 +1,23 @@
+{
+    "VELOCITY-TRACKER": {
+        "button-title": "Open Velocity Tracker List",
+        "add-velocity-tracker": "Add Velocity Tracker",
+        "delete-velocity-tracker": "Delete Velocity Tracker",
+        "settings": {
+            "distance-units": {
+                "Name": "Distance Units",
+                "Hint": "what is used to measure distance? (ex: m, km, ft, miles)"
+            },
+            "time-units": {
+                "Name": "Time Units",
+                "Hint": "What is used to measure time? (ex: s, min, h)"
+            }
+        },
+        "confirms": {
+            "deleteConfirm": {
+              "Title": "Confirm Deletion",
+              "Content": "Are you sure you want to delete this Velocity Tracker? This action cannot be undone."
+            }
+        }
+    }
+}
