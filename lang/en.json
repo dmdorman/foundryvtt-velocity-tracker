@@ -19,6 +19,10 @@
             "default-acceleration": {
                 "Name": "Default acceleration",
                 "Hint": "In the units defined above"
+            },
+            "gm-can-see-all": {
+                "Name": "Allow GM to see all velocity trackers?",
+                "Hint": ""
             }
         },
         "confirms": {
@@ -28,13 +32,13 @@
             }
         },
         "labels": {
-            "name": "character/vehicle name",
-            "current-velocity": "current velocity",
-            "distance": "distance moved",
-            "acceleration": "acceleration",
-            "action-time": "time spent", 
-            "total-time": "total elapsed time",
-            "max-velocity": "maximum velocity"
+            "name": "name",
+            "current-velocity": "vel.",
+            "distance": "dist. moved",
+            "acceleration": "accel.",
+            "action-time": "timing", 
+            "total-time": "total time",
+            "max-velocity": "max. vel."
         }
     }
 }

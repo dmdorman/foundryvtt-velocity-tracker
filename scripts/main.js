@@ -6,7 +6,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
     controls[0].tools.push({
     name: 'velocity tracker',
     title: 'Velocity Tracker',
-    icon: 'far fa-up',
+    icon: 'far fa-right',
     button: true,
     //onClick: () => new VelocityTracker().render(true),
     onClick: () => {
@@ -38,6 +38,17 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
 class VelocityTrackerList {
     static initialize() {
         this.velocityTracker = new VelocityTracker();
+
+        // gm can see all velocity trackers
+        game.settings.register(this.ID, this.SETTINGS.GM_CAN_SEE_ALL, {
+            name: `VELOCITY-TRACKER.settings.${this.SETTINGS.GM_CAN_SEE_ALL}.Name`,
+            default: true,
+            type: Boolean,
+            scope: 'world',
+            config: true,
+            hint: `VELOCITY-TRACKER.settings.${this.SETTINGS.GM_CAN_SEE_ALL}.Hint`,
+            onChange: () => ui.players.render()
+        })
 
         // distance units setting
         game.settings.register(this.ID, this.SETTINGS.DISTANCE_UNITS, {
@@ -98,7 +109,8 @@ class VelocityTrackerList {
         DISTANCE_UNITS: 'distance-units',
         TIME_UNITS: 'time-units',
         DEFAULT_ACTION_TIME: 'default-action-time',
-        DEFAULT_ACCELERATION: 'default-acceleration'
+        DEFAULT_ACCELERATION: 'default-acceleration',
+        GM_CAN_SEE_ALL: 'gm-can-see-all'
     }
 
     static log(force, ...args) {
@@ -125,6 +137,21 @@ class VelocityTrackerData {
         return allVelocityTrackers
     }
 
+    static otherVelocityTrackers(userId) {
+        const otherVelocityTrackers = game.users.reduce((accumulator, user) => {1
+            if (user.id !== userId) {
+                const userVelocityTrackers = this.getVelocityTrackersForUser(user.id);
+
+                return {
+                    ...accumulator,
+                    ...userVelocityTrackers
+                }
+            }
+        }, {});
+
+        return otherVelocityTrackers
+    }
+
     // get all velocity trackers for a given user
     static getVelocityTrackersForUser(userId) {
         return game.users.get(userId)?.getFlag(VelocityTrackerList.ID, VelocityTrackerList.FLAGS.VELOCITYTRACKER)
@@ -135,7 +162,7 @@ class VelocityTrackerData {
         const newVelocityTracker = {
             userId,
             id: foundry.utils.randomID(16),
-            name: "character/vehicle name",
+            name: "",
             currentVelocity: 0,
             movementAction: 0,
             acceleration: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.DEFAULT_ACCELERATION),
@@ -184,13 +211,14 @@ class VelocityTracker extends FormApplication {
 
         const overrides = {
             height: 'auto',
-            width: 600,
+            width: 1000,
             id: 'velocity-tracker',
             template: VelocityTrackerList.TEMPLATES.VELOCITYTRACKERLIST,
             title: 'Velocity Tracker',
             userId: game.userId,
             closeOnSubmit: false, // do not close when submitted
             submitOnChange: true, // submit when any input changes
+            resizable: true,
         }
 
         const mergedOptions = foundry.utils.mergeObject(defaults, overrides);
@@ -199,10 +227,14 @@ class VelocityTracker extends FormApplication {
     }
 
     getData(options) {
+        const otherVelocityTrackers = game.users.current?.isGM && game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.GM_CAN_SEE_ALL)
+        ? VelocityTrackerData.otherVelocityTrackers(options.userId) : {}
+
         return {
             velocitytrackers: VelocityTrackerData.getVelocityTrackersForUser(options.userId),
             distanceUnits: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.DISTANCE_UNITS),
             timeUnits: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.TIME_UNITS),
+            otherVelocityTrackers: otherVelocityTrackers
         }
     }
 
@@ -249,23 +281,23 @@ class VelocityTracker extends FormApplication {
             case 'progress': {
                 const relevantVelocityTracker = VelocityTrackerData.allVelocityTrackers[velocityTrackerId];
 
-                const actionTime = eval(relevantVelocityTracker.actionTime)
+                const actionTime = eval(relevantVelocityTracker.actionTime);
 
-                const elapsedTime = relevantVelocityTracker.elapsedTime + actionTime
+                const elapsedTime = relevantVelocityTracker.elapsedTime + actionTime;
 
                 let newVelocity = Math.round((relevantVelocityTracker.movementAction / actionTime) + 
-                    (relevantVelocityTracker.acceleration * elapsedTime**2))
+                    (relevantVelocityTracker.acceleration * elapsedTime**2));
 
-                if (relevantVelocityTracker.maxVelocity !== null) newVelocity = Math.min(eval(relevantVelocityTracker.maxVelocity), newVelocity)
+                if (relevantVelocityTracker.maxVelocity !== null) newVelocity = Math.min(eval(relevantVelocityTracker.maxVelocity), newVelocity);
 
                 const update = {
                     ["elapsedTime"]: elapsedTime,
                     ["currentVelocity"]: newVelocity
-                }
+                };
 
-                VelocityTrackerData.updateVelocityTracker(relevantVelocityTracker.id, update)
+                VelocityTrackerData.updateVelocityTracker(relevantVelocityTracker.id, update);
 
-                this.render()
+                this.render();
         
                 break;
             }

@@ -1,43 +1,64 @@
 {{!-- {{log 'velocity-tracker-list-template' this}} --}}
 <form>
-    <ul class="velocity-tracker-list flexcol">
-    <div class="flexrow">
-        <div>{{localize "VELOCITY-TRACKER.labels.name"}}</div>
-        <div>{{localize "VELOCITY-TRACKER.labels.current-velocity"}} ({{distanceUnits}}/{{timeUnits}})</div>
-        <div>{{localize "VELOCITY-TRACKER.labels.distance"}} ({{distanceUnits}})</div>
-        <div>{{localize "VELOCITY-TRACKER.labels.acceleration"}} ({{distanceUnits}}/{{timeUnits}}^2)</div>
-        <div>{{localize "VELOCITY-TRACKER.labels.action-time"}} ({{timeUnits}})</div>
-        <div>{{localize "VELOCITY-TRACKER.labels.total-time"}} ({{timeUnits}})</div>
-        <div>{{localize "VELOCITY-TRACKER.labels.max-velocity"}} ({{distanceUnits}}/{{timeUnits}})</div>
-    </div>
-    {{#each velocitytrackers}}
-        <li class="flewrow" data-velocity-tracker-id="{{id}}">
-            <div class="flexrow">
-                <button type="button" title="{{localize "VELOCITY-TRACKER.delete-velocity-tracker"}}" data-action="delete" class="flex0 velocity-tracker-icon-button">
-                    <i class="fas fa-trash"></i>
-                </button>
-
-                <input type="text" value="{{name}}" name="{{id}}.name" data-dtype="String" />
-
-                <input type="text" value="{{currentVelocity}}" name="{{id}}.currentVelocity" data-dtype="Number" />
-
-                <input type="text" value="{{movementAction}}" name="{{id}}.movementAction" data-dtype="Number" />
-
-                <input type="text" value="{{acceleration}}" name="{{id}}.acceleration" data-dtype="Number" />
-
-                <input type="text" value="{{actionTime}}" name="{{id}}.actionTime" data-dtype="String" />
-
-                <input type="text" value="{{elapsedTime}}" name="{{id}}.elapsedTime" data-dtype="Number" />
-
-                <input type="text" value="{{maxVelocity}}" name="{{id}}.maxVelocity" data-dtype="Number" />
-
-                <button type="button" title="{{localize "VELOCITY-TRACKER.progress-velocity-tracker"}}" data-action="progress" class="flex0 velocity-tracker-icon-button">
-                    <i class="fas fa-right"></i>
-                </button>
+    <div class="flexcol">
+        <div class="flexrow">
+            <div class="flexrow flexspace">
+                <span></span>
+                <div class="velocity-tracker-label">{{localize "VELOCITY-TRACKER.labels.name"}}</div>
+                <div class="velocity-tracker-label">{{localize "VELOCITY-TRACKER.labels.max-velocity"}} ({{distanceUnits}}/{{timeUnits}})</div>
+                <div class="velocity-tracker-label">{{localize "VELOCITY-TRACKER.labels.acceleration"}} ({{distanceUnits}}/{{timeUnits}}^2)</div>
+                <div class="velocity-tracker-label">{{localize "VELOCITY-TRACKER.labels.total-time"}} ({{timeUnits}})</div>
+                <div class="velocity-tracker-label">{{localize "VELOCITY-TRACKER.labels.action-time"}} ({{timeUnits}})</div>
+                <div class="velocity-tracker-label">{{localize "VELOCITY-TRACKER.labels.distance"}} ({{distanceUnits}})</div>
+                <div class="velocity-tracker-label">{{localize "VELOCITY-TRACKER.labels.current-velocity"}} ({{distanceUnits}}/{{timeUnits}})</div>
             </div>
-        </li>
-    {{/each}}
-    </ul>
+        </div>
+        <ul class="velocity-tracker-list flexcol">
+        {{#each velocitytrackers}}
+            <li class="flewrow" data-velocity-tracker-id="{{id}}">
+                <div class="flexrow flexspace">
+                    <button type="button" title="{{localize "VELOCITY-TRACKER.delete-velocity-tracker"}}" data-action="delete" class="flex0 velocity-tracker-icon-button">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <input type="text" class="velocity-tracker-input flex2" value="{{name}}" name="{{id}}.name" data-dtype="String" />
+                    <input type="text" class="velocity-tracker-input" value="{{maxVelocity}}" name="{{id}}.maxVelocity" data-dtype="Number" />
+                    <input type="text" class="velocity-tracker-input" value="{{acceleration}}" name="{{id}}.acceleration" data-dtype="Number" />
+                    <input type="text" class="velocity-tracker-input" value="{{elapsedTime}}" name="{{id}}.elapsedTime" data-dtype="Number" />
+                    <input type="text" class="velocity-tracker-input" value="{{actionTime}}" name="{{id}}.actionTime" data-dtype="String" />
+                    <input type="text" class="velocity-tracker-input" value="{{movementAction}}" name="{{id}}.movementAction" data-dtype="Number" />
+                    <input type="text" class="velocity-tracker-input" value="{{currentVelocity}}" name="{{id}}.currentVelocity" data-dtype="Number" />
+                    
+                    <button type="button" title="{{localize "VELOCITY-TRACKER.progress-velocity-tracker"}}" data-action="progress" class="flex0 velocity-tracker-icon-button">
+                        <i class="fas fa-right"></i>
+                    </button>
+                </div>
+            </li>
+        {{/each}}
+        {{#each otherVelocityTrackers}}
+            <li class="flewrow" data-velocity-tracker-id="{{id}}">
+                <div class="flexrow flexspace">
+                    <button type="button" title="{{localize "VELOCITY-TRACKER.delete-velocity-tracker"}}" data-action="delete" class="flex0 velocity-tracker-icon-button">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <input type="text" class="velocity-tracker-input flex2" value="{{name}}" name="{{id}}.name" data-dtype="String" disabled />
+                    <input type="text" class="velocity-tracker-input" value="{{maxVelocity}}" name="{{id}}.maxVelocity" data-dtype="Number" disabled />
+                    <input type="text" class="velocity-tracker-input" value="{{acceleration}}" name="{{id}}.acceleration" data-dtype="Number" disabled />
+                    <input type="text" class="velocity-tracker-input" value="{{elapsedTime}}" name="{{id}}.elapsedTime" data-dtype="Number" disabled />
+                    <input type="text" class="velocity-tracker-input" value="{{actionTime}}" name="{{id}}.actionTime" data-dtype="String" disabled />
+                    <input type="text" class="velocity-tracker-input" value="{{movementAction}}" name="{{id}}.movementAction" data-dtype="Number" disabled />
+                    <input type="text" class="velocity-tracker-input" value="{{currentVelocity}}" name="{{id}}.currentVelocity" data-dtype="Number" disabled />
+                    
+                    <button type="button" title="{{localize "VELOCITY-TRACKER.progress-velocity-tracker"}}" data-action="progress" class="flex0 velocity-tracker-icon-button">
+                        <i class="fas fa-right"></i>
+                    </button>
+                </div>
+            </li>
+        {{/each}}
+        </ul>
+    </div>
 
-    <button type="button" data-action="create"><i class="fas fa-plus"></i>{{localize "VELOCITY-TRACKER.add-velocity-tracker"}}</button>
+    <button type="button" class="velocity-tracker-button" data-action="create">
+        <i class="fas fa-plus"></i>
+        {{localize "VELOCITY-TRACKER.add-velocity-tracker"}}
+    </button>
 </form>

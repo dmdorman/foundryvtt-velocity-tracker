@@ -4,9 +4,18 @@
     gap: 1em;
 }
 
-.velocity-tracker-list > li {
+.velocity-tracker-label {
+    font-weight: bold;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+.velocity-tracker-list {
     align-items: center;
     gap: 0.5em;
+    list-style-type: none;
+    padding: 0; 
+    margin: 0;
 }
 
 .velocity-tracker-icon-button {
@@ -25,4 +34,33 @@
 .velocity-tracker-icon-button:hover, .velocity-tracker-icon-button:focus {
     box-shadow: none;
     text-shadow: 0 0 5px red;
+}
+
+.velocity-tracker-input {
+    width: 10px;
+    font-size: 12px;
+    color: aquamarine;
+}
+
+.velocity-tracker-button {
+    font-weight: bold;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.flexrow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.flexspace {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.flex2 {
+    flex: 2;
 }
