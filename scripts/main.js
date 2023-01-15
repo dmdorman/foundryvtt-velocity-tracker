@@ -32,6 +32,8 @@ Hooks.once('devModeReady', ({ registerPackageDebugFlag }) => {
  * @property {float} movementAction - how far does a character/vehicle move in a specific turn
  * @property {float} acceleration - how much is character/vehicle accelerating?
  * @property {float} elapsedTime - total elapsed time since movment began
+ * @property {string} actionTime - how long does this action take?
+ * @property {string} maxVelocity - maximum velocity a Velocity Tracker can reach
  */
 class VelocityTrackerList {
     static initialize() {
@@ -58,6 +60,28 @@ class VelocityTrackerList {
             hint: `VELOCITY-TRACKER.settings.${this.SETTINGS.TIME_UNITS}.Hint`,
             onChange: () => ui.players.render()
         })
+
+        // default action time
+        game.settings.register(this.ID, this.SETTINGS.DEFAULT_ACTION_TIME, {
+            name: `VELOCITY-TRACKER.settings.${this.SETTINGS.DEFAULT_ACTION_TIME}.Name`,
+            default: 1,
+            type: Number,
+            scope: 'world',
+            config: true,
+            hint: `VELOCITY-TRACKER.settings.${this.SETTINGS.DEFAULT_ACTION_TIME}.Hint`,
+            onChange: () => ui.players.render()
+        })
+
+        // default acceleration
+        game.settings.register(this.ID, this.SETTINGS.DEFAULT_ACCELERATION, {
+            name: `VELOCITY-TRACKER.settings.${this.SETTINGS.DEFAULT_ACCELERATION}.Name`,
+            default: 0,
+            type: Number,
+            scope: 'world',
+            config: true,
+            hint: `VELOCITY-TRACKER.settings.${this.SETTINGS.DEFAULT_ACCELERATION}.Hint`,
+            onChange: () => ui.players.render()
+        })
     }
 
     static ID = 'velocity-tracker';
@@ -72,7 +96,9 @@ class VelocityTrackerList {
 
     static SETTINGS = {
         DISTANCE_UNITS: 'distance-units',
-        TIME_UNITS: 'time-units'
+        TIME_UNITS: 'time-units',
+        DEFAULT_ACTION_TIME: 'default-action-time',
+        DEFAULT_ACCELERATION: 'default-acceleration'
     }
 
     static log(force, ...args) {
@@ -112,8 +138,10 @@ class VelocityTrackerData {
             name: "character/vehicle name",
             currentVelocity: 0,
             movementAction: 0,
-            acceleration: 0,
+            acceleration: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.DEFAULT_ACCELERATION),
             elapsedTime: 0,
+            actionTime: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.DEFAULT_ACTION_TIME),
+            maxVelocity: "",
             ...velocityTrackerData
         }
 
@@ -150,7 +178,6 @@ class VelocityTrackerData {
         return game.users.get(relevantVelocityTracker.userId)?.setFlag(VelocityTrackerList.ID, VelocityTrackerList.FLAGS.VELOCITYTRACKER, keyDeletion)
     }
 }
-
 class VelocityTracker extends FormApplication {
     static get defaultOptions() {
         const defaults = super.defaultOptions;
@@ -175,7 +202,7 @@ class VelocityTracker extends FormApplication {
         return {
             velocitytrackers: VelocityTrackerData.getVelocityTrackersForUser(options.userId),
             distanceUnits: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.DISTANCE_UNITS),
-            timeUnits: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.TIME_UNITS)
+            timeUnits: game.settings.get(VelocityTrackerList.ID, VelocityTrackerList.SETTINGS.TIME_UNITS),
         }
     }
 
@@ -219,8 +246,32 @@ class VelocityTracker extends FormApplication {
                 break;
             }
 
+            case 'progress': {
+                const relevantVelocityTracker = VelocityTrackerData.allVelocityTrackers[velocityTrackerId];
+
+                const actionTime = eval(relevantVelocityTracker.actionTime)
+
+                const elapsedTime = relevantVelocityTracker.elapsedTime + actionTime
+
+                let newVelocity = Math.round((relevantVelocityTracker.movementAction / actionTime) + 
+                    (relevantVelocityTracker.acceleration * elapsedTime**2))
+
+                if (relevantVelocityTracker.maxVelocity !== null) newVelocity = Math.min(eval(relevantVelocityTracker.maxVelocity), newVelocity)
+
+                const update = {
+                    ["elapsedTime"]: elapsedTime,
+                    ["currentVelocity"]: newVelocity
+                }
+
+                VelocityTrackerData.updateVelocityTracker(relevantVelocityTracker.id, update)
+
+                this.render()
+        
+                break;
+            }
+
             default:
-                VelocityTracker.log(false, 'Invalid action detected', action)
+                VelocityTrackerList.log(false, 'Invalid action detected', action)
         }
     }
 }
