@@ -26,9 +26,9 @@
         }
     ],
     "url": "https://github.com/dmdorman/foundryvtt-velocity-tracker",
-    "manifest": "https://raw.githubusercontent.com/dmdorman/foundryvtt-velocity-tracker/main/module.json",
-    "download": "https://github.com/dmdorman/foundryvtt-velocity-tracker/archive/refs/heads/main.zip",
-    "license": "https://raw.githubusercontent.com/dmdorman/foundryvtt-velocity-tracker/main/LICENSE",
-    "changelog": "https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/CHANGELOG.md",
+    "manifest": "https://raw.githubusercontent.com/dmdorman/foundryvtt-velocity-tracker/v1.0.0-alpha/module.json",
+    "download": "https://github.com/dmdorman/foundryvtt-velocity-tracker/archive/refs/heads/v1.0.0-alpha.zip",
+    "license": "https://raw.githubusercontent.com/dmdorman/foundryvtt-velocity-tracker/v1.0.0-alpha/LICENSE",
+    "changelog": "https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/v1.0.0-alpha/CHANGELOG.md",
     "bugs": "https://github.com/dmdorman/foundryvtt-velocity-tracker/issues"
 }
