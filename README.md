@@ -3,8 +3,10 @@
 a system-agnostic module that allows players to track velocities for a number of characters/vehicles/etc for systems and settings in which velocity is an important factor
 
 ## Settings
-![alt text](https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/images/settings.PNG?raw=true)
-
+<p align="center">
+  <img src="https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/images/settings.PNG?raw=true" />
+</p>
+  
 "Allow GM to see all velocity trackers?" : On by default, this option allows GMs to see velocity trackers defined by the players. However, this is not a live feed to players' velocity trackers. To see updates on the players' velocity trackers close and re-open the velocity tracker.
 
 "Distance Units" / "Time Units" : what are the units of the system your're using? Velocity will be shown as "Distnace Unit / Time Unit". Acceleration will be shown as "Distance Unit / Time Unit ^2)
@@ -14,12 +16,16 @@ a system-agnostic module that allows players to track velocities for a number of
 "Default acceleration": some systems have default acceleration defined in the rules. If the system you are using does not it is safe to leave this a 0
 
 ## Using Velocity Tracker
-![alt text](https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/images/how-to-open.PNG?raw=true) 
+<p align="center">
+  <img src="https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/images/how-to-open.PNG?raw=true" />
+</p>
 
 For both GMs and Players, to open Velocity Tracker click the 'Right Arrow' icon on the left hand side of the screen.
 
 A windows should pop up like the image below. This is the Velocity Tracker List.
-![alt text](https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/images/velocity-tracker-gm-view.PNG?raw=true)
+<p align="center">
+  <img src="https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/images/velocity-tracker-gm-view.PNG?raw=true" />
+</p>
 
 ### Buttons
 '+ Add Velocity Tracker' - adds a Velocity Tracker to the Velocity Tracker List, this will show up as a new row populated with Velocity Tracker defaults
@@ -52,4 +58,6 @@ A windows should pop up like the image below. This is the Velocity Tracker List.
 
 If "Allow GM to see all velocity trackers?" was enabled a GM will see something similar to the image below when they open up their Velocity Tracker List. The Velocity Tracker fields for another players' Velocity Tracker is not editable. However, the GM can delete other players' Velocity Trackers. 
 
-![alt text](https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/images/velocity-tracker.PNG?raw=true)
+<p align="center">
+  <img src="https://github.com/dmdorman/foundryvtt-velocity-tracker/blob/main/images/velocity-tracker.PNG?raw=true" />
+</p>
