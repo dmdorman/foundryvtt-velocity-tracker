@@ -214,7 +214,7 @@ class VelocityTracker extends FormApplication {
             width: 1000,
             id: 'velocity-tracker',
             template: VelocityTrackerList.TEMPLATES.VELOCITYTRACKERLIST,
-            title: 'Velocity Tracker',
+            title: "VELOCITY-TRACKER.title",
             userId: game.userId,
             closeOnSubmit: false, // do not close when submitted
             submitOnChange: true, // submit when any input changes

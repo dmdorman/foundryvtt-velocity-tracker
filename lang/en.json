@@ -1,5 +1,6 @@
 {
     "VELOCITY-TRACKER": {
+        "title": "Velocity Tracker List",
         "button-title": "Open Velocity Tracker List",
         "add-velocity-tracker": "Add Velocity Tracker",
         "delete-velocity-tracker": "Delete Velocity Tracker",
