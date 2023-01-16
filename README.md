@@ -28,23 +28,25 @@ A windows should pop up like the image below. This is the Velocity Tracker List.
 
 'Right Arrow' - this progresses time and calculates velocity
 
+
 ### Fields
-name - the name of whatever it is you want to track
+<b>name</b> - the name of whatever it is you want to track
 
-max. vel. (maximum velocity) - how fast can your character/vehicle/etc go? Also useful for setting a terminal velocity for falling objects
+<b>max. vel. (maximum velocity)</b> - how fast can your character/vehicle/etc go? Also useful for setting a terminal velocity for falling objects
 
-accel. (acceleration) - how fast can your character/vehicle/etc get up to max velocity? This is heavily correlated with total time, so depending on what you're tracking you may want to set 'total time' to 0 whenever acceleration changes or start a new Velocity Tracker
+<b>accel. (acceleration)</b> - how fast can your character/vehicle/etc get up to max velocity? This is heavily correlated with total time, so depending on what you're tracking you may want to set 'total time' to 0 whenever acceleration changes or start a new Velocity Tracker
 
-total time - how much time has passed since movement began? This is heavily correlated with acceleration. Total time will increase by the amount set in 'timing' when the right arrow on the right hand side for the associated Velocity Tracker is clicked
+<b>total time</b> - how much time has passed since movement began? This is heavily correlated with acceleration. Total time will increase by the amount set in 'timing' when the right arrow on the right hand side for the associated Velocity Tracker is clicked
 
-timing
+<b>timing</b>
   - how long is a round? For example D&D has 6 second rounds so in this case put "6" for timing.
   OR 
   - how many actions does a character/vehicle/etc have in a timeframe? In some systems not all characters act at same time. In that case put (# of actions) / (# how       long is a full round). For example a character who acts 3 times in a 12 second round should put "3/12" for timing.
 
-dist. moved (distance moved) - how far did the character/vehicle/etc move this turn/over the course of the time defined in 'timing'?
+<b>dist. moved (distance moved)</b> - how far did the character/vehicle/etc move this turn/over the course of the time defined in 'timing'?
 
-vel. (velocity) - velocity will be determined by all the other fields and will update once the 'Right Arrow' is clicked however it can be edited
+<b>vel. (velocity)</b> - velocity will be determined by all the other fields and will update once the 'Right Arrow' is clicked however it can be edited
+
 
 ### GM view
 
