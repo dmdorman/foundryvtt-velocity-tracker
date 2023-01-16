@@ -281,14 +281,14 @@ class VelocityTracker extends FormApplication {
             case 'progress': {
                 const relevantVelocityTracker = VelocityTrackerData.allVelocityTrackers[velocityTrackerId];
 
-                const actionTime = eval(relevantVelocityTracker.actionTime);
+                const actionTime = (relevantVelocityTracker.actionTime.includes("/")) ? eval(1/eval(relevantVelocityTracker.actionTime)) : eval(relevantVelocityTracker.actionTime);
 
                 const elapsedTime = relevantVelocityTracker.elapsedTime + actionTime;
 
                 let newVelocity = Math.round((relevantVelocityTracker.movementAction / actionTime) + 
                     (relevantVelocityTracker.acceleration * elapsedTime**2));
 
-                if (relevantVelocityTracker.maxVelocity !== null) newVelocity = Math.min(eval(relevantVelocityTracker.maxVelocity), newVelocity);
+                if (relevantVelocityTracker.maxVelocity !== null) newVelocity = minAbsoluteValue(eval(relevantVelocityTracker.maxVelocity), newVelocity);
 
                 const update = {
                     ["elapsedTime"]: elapsedTime,
@@ -306,4 +306,8 @@ class VelocityTracker extends FormApplication {
                 VelocityTrackerList.log(false, 'Invalid action detected', action)
         }
     }
+}
+
+function minAbsoluteValue (a, b) {
+    return result = (Math.abs(a) <= Math.abs(b)) ? a : b
 }
